@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PrenderíaPro — Sistema de Gestión</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* LIGHT BODY PALETTE */
+  --body-bg: #F5F3EE;
+  --body-bg2: #EDEAE3;
+  --sidebar-bg: #1A1916;
+  --sidebar-border: rgba(201,168,76,0.15);
+  --topbar-bg: #FFFFFF;
+  --topbar-border: #E8E3D8;
+  --card-bg: #FFFFFF;
+  --card-border: #E8E3D8;
+  --card-bg2: #F9F7F3;
+
+  /* TEXT */
+  --text-h: #1A1916;
+  --text-b: #3D3A34;
+  --text-2: #7A7469;
+  --text-3: #ADA89F;
+  --text-side: #F0EDE6;
+  --text-side2: #9E9A93;
+  --text-side3: #6B6760;
+
+  /* ACCENT */
+  --gold: #C9A84C;
+  --gold-light: #E8CC7A;
+  --gold-dim: #8B6F35;
+  --gold-bg: rgba(201,168,76,0.08);
+  --gold-border: rgba(201,168,76,0.25);
+
+  /* SEMANTIC */
+  --green: #2D7D52;
+  --green-bg: #EBF7F1;
+  --green-border: #A8DEC4;
+  --red: #C0392B;
+  --red-bg: #FEF0EE;
+  --red-border: #F5B8B3;
+  --amber: #9B6E00;
+  --amber-bg: #FEF8EC;
+  --amber-border: #F5D98A;
+  --blue: #185FA5;
+  --blue-bg: #EBF3FC;
+  --blue-border: #9DC4EC;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 4px 12px rgba(0,0,0,0.04);
+  --shadow-md: 0 2px 8px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.06);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--body-bg); color: var(--text-b); min-height: 100vh; overflow-x: hidden; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D5D0C8; border-radius: 3px; }
+
+/* LAYOUT */
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* ═══════════════════════════════════════
+   SIDEBAR — DARK
+═══════════════════════════════════════ */
+.sidebar {
+  width: 232px; min-width: 232px;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.sidebar-brand {
+  padding: 22px 18px 18px;
+  border-bottom: 1px solid var(--sidebar-border);
+}
+.brand-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+.brand-gem {
+  width: 34px; height: 34px;
+  background: linear-gradient(135deg, #C9A84C 0%, #7A5C2A 100%);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center; font-size: 17px;
+}
+.brand-name { font-family: 'DM Serif Display', serif; font-size: 19px; color: #E8CC7A; letter-spacing: 0.01em; }
+.brand-tagline { font-size: 10px; color: var(--text-side3); letter-spacing: 0.07em; text-transform: uppercase; }
+.sidebar-nav { flex: 1; padding: 10px 0; overflow-y: auto; }
+.nav-section { font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #4A4740; padding: 14px 18px 5px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 18px; cursor: pointer; font-size: 13px; color: var(--text-side2);
+  border-left: 2px solid transparent; transition: all 0.13s;
+}
+.nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text-side); }
+.nav-item.active { background: rgba(201,168,76,0.1); color: #E8CC7A; border-left-color: var(--gold); font-weight: 500; }
+.nav-icon { font-size: 14px; width: 18px; text-align: center; opacity: 0.85; }
+.nav-badge { margin-left: auto; background: var(--red); color: #fff; font-size: 9px; font-weight: 700; border-radius: 10px; padding: 1px 6px; }
+.nav-badge.warn { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+.sidebar-user {
+  padding: 14px 18px;
+  border-top: 1px solid var(--sidebar-border);
+  display: flex; align-items: center; gap: 10px;
+}
+.u-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-dim), #2E2C27);
+  border: 1px solid rgba(201,168,76,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: var(--gold-light); flex-shrink: 0;
+}
+.u-name { font-size: 12px; font-weight: 500; color: var(--text-side); }
+.u-role { font-size: 10px; color: var(--text-side3); }
+
+/* ═══════════════════════════════════════
+   MAIN — LIGHT
+═══════════════════════════════════════ */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.topbar {
+  background: var(--topbar-bg);
+  border-bottom: 1px solid var(--topbar-border);
+  padding: 0 24px; height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0; box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.tb-left { display: flex; align-items: center; gap: 14px; }
+.tb-title { font-size: 15px; font-weight: 500; color: var(--text-h); }
+.tb-date { font-size: 12px; color: var(--text-3); }
+.tb-right { display: flex; align-items: center; gap: 8px; }
+.btn-icon {
+  width: 34px; height: 34px;
+  background: var(--body-bg); border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 15px; color: var(--text-2);
+  transition: all 0.12s;
+}
+.btn-icon:hover { background: var(--body-bg2); border-color: #C8C2B8; }
+.btn-primary {
+  display: flex; align-items: center; gap: 6px;
+  background: linear-gradient(135deg, #C9A84C 0%, #8B6F35 100%);
+  color: #fff; font-size: 12px; font-weight: 600;
+  padding: 7px 16px; border-radius: var(--radius-sm);
+  cursor: pointer; border: none; font-family: 'DM Sans', sans-serif;
+  box-shadow: 0 2px 8px rgba(139,111,53,0.3);
+  transition: opacity 0.13s;
+}
+.btn-primary:hover { opacity: 0.9; }
+.btn-outline {
+  display: flex; align-items: center; gap: 5px;
+  background: #fff; color: var(--gold-dim);
+  font-size: 11px; font-weight: 500;
+  padding: 6px 12px; border-radius: var(--radius-sm);
+  cursor: pointer; border: 1px solid var(--gold-border);
+  font-family: 'DM Sans', sans-serif; transition: all 0.12s;
+}
+.btn-outline:hover { background: var(--gold-bg); }
+.btn-ghost {
+  background: transparent; border: 1px solid var(--card-border);
+  color: var(--text-2); font-size: 11px;
+  padding: 6px 12px; border-radius: var(--radius-sm);
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all 0.12s;
+}
+.btn-ghost:hover { background: var(--body-bg2); }
+
+/* CONTENT */
+.content { flex: 1; overflow-y: auto; padding: 22px 24px; }
+
+/* VIEWS */
+.view { display: none; animation: fadeUp 0.18s ease; }
+.view.active { display: block; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ═══════════════════════════════════════
+   CARDS — LIGHT
+═══════════════════════════════════════ */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.card-title { font-size: 13px; font-weight: 500; color: var(--text-h); }
+.card-link { font-size: 11px; color: var(--gold-dim); cursor: pointer; font-weight: 500; }
+.card-link:hover { color: var(--gold); }
+
+/* KPI CARDS */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; margin-bottom: 20px; }
+.kpi-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.15s;
+}
+.kpi-card:hover { box-shadow: var(--shadow-md); }
+.kpi-card.danger { border-left: 3px solid var(--red); }
+.kpi-card.warn { border-left: 3px solid var(--amber); }
+.kpi-card.success { border-left: 3px solid var(--green); }
+.kpi-card.gold { border-left: 3px solid var(--gold); }
+.kpi-icon-wrap {
+  width: 34px; height: 34px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; margin-bottom: 10px;
+}
+.kpi-icon-wrap.danger { background: var(--red-bg); }
+.kpi-icon-wrap.warn { background: var(--amber-bg); }
+.kpi-icon-wrap.success { background: var(--green-bg); }
+.kpi-icon-wrap.gold { background: var(--gold-bg); }
+.kpi-label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; }
+.kpi-value { font-size: 24px; font-weight: 600; color: var(--text-h); line-height: 1; margin-bottom: 5px; }
+.kpi-value.danger { color: var(--red); }
+.kpi-value.warn { color: var(--amber); }
+.kpi-value.gold { color: var(--gold-dim); }
+.kpi-trend { font-size: 11px; }
+.kpi-trend.up { color: var(--green); }
+.kpi-trend.dn { color: var(--red); }
+.kpi-trend.neutral { color: var(--text-3); }
+
+/* LAYOUT GRIDS */
+.grid-2 { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-bottom: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; margin-bottom: 16px; }
+.grid-2-eq { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+/* TABLE */
+.data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.data-table th { text-align: left; font-size: 10px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-3); padding: 7px 10px; border-bottom: 1px solid var(--card-border); }
+.data-table td { padding: 9px 10px; border-bottom: 1px solid #F0EDE6; color: var(--text-b); vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tbody tr { cursor: pointer; transition: background 0.1s; }
+.data-table tbody tr:hover td { background: var(--gold-bg); }
+
+/* BADGES */
+.badge { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+.badge-red { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+.badge-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+.badge-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+.badge-blue { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-border); }
+.badge-gold { background: var(--gold-bg); color: var(--gold-dim); border: 1px solid var(--gold-border); }
+.badge-gray { background: var(--body-bg2); color: var(--text-2); border: 1px solid var(--card-border); }
+
+/* MOVE ITEMS */
+.move-item { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid #F0EDE6; }
+.move-item:last-child { border-bottom: none; }
+.move-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.move-dot.in { background: var(--green); }
+.move-dot.out { background: var(--red); }
+.move-desc { flex: 1; }
+.move-title { font-size: 12px; color: var(--text-b); }
+.move-meta { font-size: 10px; color: var(--text-3); margin-top: 1px; }
+.move-amount { font-size: 13px; font-weight: 600; }
+.move-amount.in { color: var(--green); }
+.move-amount.out { color: var(--red); }
+
+/* ALERT ITEMS */
+.alert-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid #F0EDE6; }
+.alert-item:last-child { border-bottom: none; }
+.alert-line { width: 3px; border-radius: 2px; flex-shrink: 0; align-self: stretch; min-height: 28px; }
+.alert-line.red { background: var(--red); }
+.alert-line.amber { background: var(--amber); }
+.alert-line.blue { background: var(--blue); }
+.alert-text { font-size: 12px; color: var(--text-b); line-height: 1.4; }
+.alert-sub { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+
+/* INV ITEMS */
+.inv-item { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid #F0EDE6; }
+.inv-item:last-child { border-bottom: none; }
+.inv-thumb { width: 36px; height: 36px; background: var(--body-bg); border: 1px solid var(--card-border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+.inv-info { flex: 1; }
+.inv-name { font-size: 12px; color: var(--text-b); }
+.inv-loc { font-size: 10px; color: var(--text-3); margin-top: 1px; }
+.inv-val { font-size: 13px; font-weight: 600; color: var(--gold-dim); }
+
+/* METRIC ROW */
+.metric-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; background: var(--card-bg2); border-radius: var(--radius-sm); margin-bottom: 6px; }
+.metric-row:last-child { margin-bottom: 0; }
+.metric-label { font-size: 12px; color: var(--text-2); }
+.metric-val { font-size: 13px; font-weight: 500; color: var(--text-h); }
+
+/* SEARCH */
+.search-wrap { position: relative; margin-bottom: 12px; }
+.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-3); font-size: 13px; }
+.search-input { width: 100%; background: var(--card-bg2); border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 8px 12px 8px 30px; font-size: 12px; color: var(--text-b); outline: none; font-family: 'DM Sans', sans-serif; }
+.search-input::placeholder { color: var(--text-3); }
+.search-input:focus { border-color: var(--gold); background: #fff; }
+
+/* TIMELINE */
+.timeline-item { display: flex; gap: 12px; padding-bottom: 14px; position: relative; }
+.timeline-item:not(:last-child)::before { content: ''; position: absolute; left: 11px; top: 22px; bottom: 0; width: 1px; background: var(--card-border); }
+.tl-dot { width: 22px; height: 22px; border-radius: 50%; background: var(--card-bg2); border: 1px solid var(--card-border); display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; z-index: 1; }
+.tl-title { font-size: 12px; font-weight: 500; color: var(--text-b); }
+.tl-meta { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+
+/* PROGRESS */
+.progress-wrap { margin-bottom: 10px; }
+.progress-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-2); margin-bottom: 5px; }
+.progress-bar { height: 6px; background: var(--body-bg2); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; }
+
+/* FOTO GRID */
+.foto-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+.foto-thumb { aspect-ratio: 1; background: var(--card-bg2); border: 1px solid var(--card-border); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; transition: all 0.13s; position: relative; overflow: hidden; }
+.foto-thumb:hover { border-color: var(--gold); background: var(--gold-bg); }
+.foto-label { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(26,25,22,0.7); font-size: 9px; color: #fff; text-align: center; padding: 3px; }
+
+/* STACKED BAR */
+.stacked-bar { height: 8px; border-radius: 4px; overflow: hidden; display: flex; margin-bottom: 8px; }
+
+/* WHATSAPP BANNER */
+.ws-banner { background: linear-gradient(135deg, #EBF7F1 0%, #F5FEFA 100%); border: 1px solid var(--green-border); border-radius: var(--radius); padding: 14px 18px; display: flex; align-items: center; gap: 14px; margin-top: 16px; }
+.ws-icon-wrap { width: 38px; height: 38px; background: var(--green-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+.ws-title { font-size: 13px; font-weight: 500; color: var(--green); margin-bottom: 2px; }
+.ws-desc { font-size: 11px; color: var(--text-2); }
+.ws-tag { margin-left: auto; flex-shrink: 0; }
+
+/* HOSTING CARD */
+.hosting-card {
+  background: linear-gradient(135deg, #1A1916 0%, #2A2820 100%);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: var(--radius);
+  padding: 20px;
+  color: var(--text-side);
+  box-shadow: var(--shadow-md);
+}
+
+/* CAJA HEADER */
+.caja-header { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; margin-bottom: 18px; }
+.caja-stat { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 16px; text-align: center; box-shadow: var(--shadow); }
+.caja-stat-label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+.caja-stat-val { font-size: 22px; font-weight: 700; }
+.caja-stat-val.green { color: var(--green); }
+.caja-stat-val.red { color: var(--red); }
+.caja-stat-val.gold { color: var(--gold-dim); }
+
+/* CONTRATO LAYOUT */
+.contrato-layout { display: grid; grid-template-columns: 1fr 340px; gap: 18px; }
+.contract-meta-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 14px; border-top: 1px solid var(--card-border); padding-top: 14px; }
+.cmi-label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.cmi-val { font-size: 14px; font-weight: 500; color: var(--text-h); }
+.cmi-val.gold { color: var(--gold-dim); }
+
+/* CLIENTE LAYOUT */
+.cliente-layout { display: grid; grid-template-columns: 300px 1fr; gap: 18px; }
+.cli-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-sm); cursor: pointer; margin-bottom: 6px; transition: all 0.13s; box-shadow: var(--shadow); }
+.cli-item:hover { border-color: var(--gold-border); }
+.cli-item.selected { border-color: var(--gold); background: var(--gold-bg); }
+.cli-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; flex-shrink: 0; }
+.profile-top { background: var(--body-bg2); border-bottom: 1px solid var(--card-border); border-radius: var(--radius) var(--radius) 0 0; padding: 20px; display: flex; align-items: center; gap: 14px; }
+.profile-avatar { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--gold-dim), #C9A84C); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 600; color: #fff; flex-shrink: 0; }
+.profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+.ps { background: var(--card-bg2); border-radius: var(--radius-sm); padding: 10px 12px; text-align: center; }
+.ps-val { font-size: 18px; font-weight: 700; color: var(--text-h); }
+.ps-label { font-size: 10px; color: var(--text-3); margin-top: 2px; }
+
+/* PDF PREVIEW */
+.report-preview { background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--card-border); }
+.pdf-gold-bar { height: 5px; background: linear-gradient(90deg, #C9A84C 0%, #E8CC7A 50%, #8B6F35 100%); }
+.pdf-page { padding: 36px 40px; font-family: 'DM Sans', sans-serif; color: #1a1a1a; font-size: 12px; }
+.pdf-header { display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 1.5px solid #C9A84C; padding-bottom: 18px; margin-bottom: 22px; }
+.pdf-brand-name { font-family: 'DM Serif Display', serif; font-size: 20px; color: #1A1916; }
+.pdf-brand-sub { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 2px; }
+.pdf-report-name { font-size: 14px; font-weight: 600; text-align: right; }
+.pdf-report-date { font-size: 10px; color: #888; text-align: right; margin-top: 3px; }
+.pdf-kpi-row { display: flex; gap: 12px; margin-bottom: 22px; }
+.pdf-kpi { flex: 1; background: #F8F6F0; border: 1px solid #E8E0D0; border-radius: 8px; padding: 12px; text-align: center; }
+.pdf-kpi-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 5px; }
+.pdf-kpi-val { font-size: 20px; font-weight: 700; color: #1a1a1a; }
+.pdf-kpi-val.red { color: #C0392B; }
+.pdf-kpi-val.gold { color: #8B6F35; }
+.pdf-section-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #888; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid #E8E0D0; }
+.pdf-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 22px; }
+.pdf-table th { text-align: left; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #888; padding: 6px 10px; background: #F8F6F0; border-bottom: 1px solid #E8E0D0; }
+.pdf-table td { padding: 7px 10px; border-bottom: 1px solid #F0EDE6; color: #333; }
+.pdf-badge { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+.pdf-badge.red { background: #FEF0EE; color: #C0392B; }
+.pdf-badge.amber { background: #FEF8EC; color: #9B6E00; }
+.pdf-badge.green { background: #EBF7F1; color: #2D7D52; }
+.pdf-footer { border-top: 1px solid #E8E0D0; padding-top: 12px; display: flex; justify-content: space-between; font-size: 9px; color: #aaa; }
+
+/* INVENTARIO CARD GRID */
+.inv-card-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+.inv-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); cursor: pointer; transition: all 0.15s; }
+.inv-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.inv-card-img { height: 90px; background: var(--card-bg2); display: flex; align-items: center; justify-content: center; font-size: 38px; border-bottom: 1px solid var(--card-border); position: relative; }
+.inv-card-body { padding: 12px; }
+.inv-card-name { font-size: 12px; font-weight: 500; color: var(--text-h); margin-bottom: 3px; }
+.inv-card-loc { font-size: 10px; color: var(--text-3); margin-bottom: 8px; }
+.inv-card-footer { display: flex; justify-content: space-between; align-items: center; }
+
+/* MODALS */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(26,25,22,0.6); z-index: 1000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(2px); }
+.modal-backdrop.show { display: flex; }
+.modal-box { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 24px; max-width: 500px; width: 90%; box-shadow: var(--shadow-md); animation: fadeUp 0.18s ease; }
+.modal-title { font-size: 16px; font-weight: 500; color: var(--text-h); margin-bottom: 4px; }
+.modal-sub { font-size: 12px; color: var(--text-2); margin-bottom: 20px; }
+.form-row { margin-bottom: 14px; }
+.form-label { font-size: 11px; color: var(--text-2); font-weight: 500; margin-bottom: 5px; display: block; }
+.form-input { width: 100%; background: var(--card-bg2); border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 9px 12px; font-size: 13px; color: var(--text-b); outline: none; font-family: 'DM Sans', sans-serif; }
+.form-input:focus { border-color: var(--gold); background: #fff; box-shadow: 0 0 0 3px rgba(201,168,76,0.1); }
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.upload-zone { background: var(--card-bg2); border: 1.5px dashed var(--card-border); border-radius: var(--radius-sm); padding: 16px; text-align: center; cursor: pointer; font-size: 12px; color: var(--text-3); margin-top: 4px; transition: all 0.13s; }
+.upload-zone:hover { border-color: var(--gold); color: var(--gold-dim); }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius); padding: 12px 16px; display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-b); box-shadow: var(--shadow-md); opacity: 0; transform: translateY(8px); transition: all 0.25s; z-index: 9999; pointer-events: none; min-width: 260px; }
+.toast.show { opacity: 1; transform: translateY(0); }
+.toast-icon { font-size: 16px; }
+
+/* SECTION HEADER */
+.section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.section-title { font-size: 14px; font-weight: 500; color: var(--text-h); }
+
+/* PULSE */
+@keyframes pulse-gold { 0%,100%{box-shadow:0 2px 8px rgba(139,111,53,0.3)} 50%{box-shadow:0 2px 16px rgba(201,168,76,0.5)} }
+.btn-pulse { animation: pulse-gold 2s infinite; }
+
+/* INDICADORES BAR */
+.bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 110px; margin-top: 10px; }
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.bar-fill { width: 100%; border-radius: 4px 4px 0 0; background: linear-gradient(180deg, var(--gold-light) 0%, var(--gold) 100%); transition: height 0.3s; }
+.bar-fill.active { background: linear-gradient(180deg, #C9A84C 0%, #8B6F35 100%); }
+.bar-label { font-size: 9px; color: var(--text-3); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ══════════ SIDEBAR DARK ══════════ -->
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">
+        <div class="brand-gem">💎</div>
+        <div class="brand-name">PrenderíaPro</div>
+      </div>
+      <div class="brand-tagline">Sistema de gestión</div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section">Principal</div>
+      <div class="nav-item active" onclick="nav('dashboard',this)"><span class="nav-icon">📊</span>Dashboard</div>
+      <div class="nav-section">Operaciones</div>
+      <div class="nav-item" onclick="nav('contratos',this)"><span class="nav-icon">📋</span>Contratos <span class="nav-badge">5</span></div>
+      <div class="nav-item" onclick="nav('clientes',this)"><span class="nav-icon">👥</span>Clientes</div>
+      <div class="nav-item" onclick="nav('caja',this)"><span class="nav-icon">💰</span>Caja</div>
+      <div class="nav-section">Inventario</div>
+      <div class="nav-item" onclick="nav('inventario',this)"><span class="nav-icon">📦</span>Artículos</div>
+      <div class="nav-section">Evidencia</div>
+      <div class="nav-item" onclick="nav('evidencia',this)"><span class="nav-icon">📷</span>Fotos y firmas</div>
+      <div class="nav-section">Reportes</div>
+      <div class="nav-item" onclick="nav('reportes',this)"><span class="nav-icon">📄</span>Reportes PDF <span class="nav-badge warn">4</span></div>
+      <div class="nav-section">Métricas</div>
+      <div class="nav-item" onclick="nav('indicadores',this)"><span class="nav-icon">📈</span>Indicadores</div>
+      <div class="nav-item"><span class="nav-icon">⚙️</span>Configuración</div>
+    </div>
+    <div class="sidebar-user">
+      <div class="u-avatar">CM</div>
+      <div><div class="u-name">Carlos Morales</div><div class="u-role">Cajero · Turno día</div></div>
+    </div>
+  </div>
+
+  <!-- ══════════ MAIN LIGHT ══════════ -->
+  <div class="main">
+    <div class="topbar">
+      <div class="tb-left">
+        <div class="tb-title" id="tb-title">Dashboard</div>
+        <div class="tb-date">Lunes 13 de abril, 2026 · 10:42 a.m.</div>
+      </div>
+      <div class="tb-right">
+        <div class="btn-icon" onclick="toast('Tienes 5 alertas pendientes')">🔔</div>
+        <div class="btn-icon" title="Respaldo automático">💾</div>
+        <button class="btn-primary" onclick="document.getElementById('m-contrato').classList.add('show')">+ Nuevo contrato</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ════ DASHBOARD ════ -->
+      <div class="view active" id="v-dashboard">
+        <div class="kpi-grid">
+          <div class="kpi-card gold">
+            <div class="kpi-icon-wrap gold">📋</div>
+            <div class="kpi-label">Contratos activos</div>
+            <div class="kpi-value gold">142</div>
+            <div class="kpi-trend up">↑ 8 esta semana</div>
+          </div>
+          <div class="kpi-card danger">
+            <div class="kpi-icon-wrap danger">⚠️</div>
+            <div class="kpi-label">Vencen en 7 días</div>
+            <div class="kpi-value danger">5</div>
+            <div class="kpi-trend dn">Requieren atención</div>
+          </div>
+          <div class="kpi-card success">
+            <div class="kpi-icon-wrap success">💰</div>
+            <div class="kpi-label">Caja neta hoy</div>
+            <div class="kpi-value" style="font-size:20px">$2.340.000</div>
+            <div class="kpi-trend up">↑ Balance positivo</div>
+          </div>
+          <div class="kpi-card warn">
+            <div class="kpi-icon-wrap warn">📦</div>
+            <div class="kpi-label">Artículos en stock</div>
+            <div class="kpi-value">1.048</div>
+            <div class="kpi-trend neutral">12 sin foto · 3 sin ubicación</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Contratos próximos a vencer</div>
+              <div class="card-link" onclick="nav('contratos',null)">Ver todos →</div>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>Cliente</th><th>Artículo</th><th>Vence</th><th>Estado</th></tr></thead>
+              <tbody>
+                <tr><td style="font-weight:500;color:var(--text-h)">Pedro Gómez</td><td>Cadena oro 18k</td><td style="color:var(--red)">14 abr</td><td><span class="badge badge-red">1 día</span></td></tr>
+                <tr><td style="font-weight:500;color:var(--text-h)">Ana Torres</td><td>Reloj Citizen</td><td style="color:var(--red)">16 abr</td><td><span class="badge badge-red">3 días</span></td></tr>
+                <tr><td style="font-weight:500;color:var(--text-h)">Luis Ríos</td><td>Anillo diamante</td><td style="color:var(--amber)">18 abr</td><td><span class="badge badge-amber">5 días</span></td></tr>
+                <tr><td style="font-weight:500;color:var(--text-h)">María Paz</td><td>iPhone 14</td><td style="color:var(--amber)">20 abr</td><td><span class="badge badge-amber">7 días</span></td></tr>
+                <tr><td style="font-weight:500;color:var(--text-h)">José Murillo</td><td>Laptop Dell</td><td>25 abr</td><td><span class="badge badge-blue">12 días</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Movimientos de caja hoy</div>
+              <div class="card-link" onclick="nav('caja',null)">Cuadrar →</div>
+            </div>
+            <div class="move-item"><div class="move-dot in"></div><div class="move-desc"><div class="move-title">Préstamo #1042 — José Murillo</div><div class="move-meta">10:15 · Carlos M.</div></div><div class="move-amount in">+$350.000</div></div>
+            <div class="move-item"><div class="move-dot in"></div><div class="move-desc"><div class="move-title">Pago interés #1039</div><div class="move-meta">09:50 · Carlos M.</div></div><div class="move-amount in">+$85.000</div></div>
+            <div class="move-item"><div class="move-dot out"></div><div class="move-desc"><div class="move-title">Devolución artículo #1038</div><div class="move-meta">09:20 · Carlos M.</div></div><div class="move-amount out">−$210.000</div></div>
+            <div class="move-item"><div class="move-dot in"></div><div class="move-desc"><div class="move-title">Apertura de caja</div><div class="move-meta">08:00 · Carlos M.</div></div><div class="move-amount in">+$200.000</div></div>
+            <div class="move-item"><div class="move-dot out"></div><div class="move-desc"><div class="move-title">Gastos operativos</div><div class="move-meta">08:30 · Carlos M.</div></div><div class="move-amount out">−$45.000</div></div>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Alertas del sistema</div></div>
+            <div class="alert-item"><div class="alert-line red"></div><div><div class="alert-text">Contrato #1031 vence mañana — Pedro G.</div><div class="alert-sub">WhatsApp pendiente de enviar</div></div></div>
+            <div class="alert-item"><div class="alert-line red"></div><div><div class="alert-text">Caja sin cuadrar — viernes 11 abr</div><div class="alert-sub">Requiere conciliación</div></div></div>
+            <div class="alert-item"><div class="alert-line amber"></div><div><div class="alert-text">12 artículos sin foto registrada</div><div class="alert-sub">Inventario incompleto</div></div></div>
+            <div class="alert-item"><div class="alert-line amber"></div><div><div class="alert-text">3 clientes sin cédula</div><div class="alert-sub">Perfiles incompletos</div></div></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Artículos recientes</div><div class="card-link" onclick="nav('inventario',null)">Ver →</div></div>
+            <div class="inv-item"><div class="inv-thumb">💎</div><div class="inv-info"><div class="inv-name">Anillo solitario oro 18k</div><div class="inv-loc">Vitrina 2 · Cto #1039</div></div><div class="inv-val">$1.200.000</div></div>
+            <div class="inv-item"><div class="inv-thumb">📱</div><div class="inv-info"><div class="inv-name">iPhone 14 128GB</div><div class="inv-loc">Bodega A3 · Cto #1041</div></div><div class="inv-val">$1.800.000</div></div>
+            <div class="inv-item"><div class="inv-thumb">⌚</div><div class="inv-info"><div class="inv-name">Reloj Citizen Eco-Drive</div><div class="inv-loc">Vitrina 1 · Cto #1033</div></div><div class="inv-val">$650.000</div></div>
+            <div class="inv-item"><div class="inv-thumb">💻</div><div class="inv-info"><div class="inv-name">Laptop Dell Inspiron 15</div><div class="inv-loc">Bodega B1 · Cto #1042</div></div><div class="inv-val">$2.100.000</div></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Indicadores del mes</div></div>
+            <div class="metric-row"><span class="metric-label">Préstamos nuevos</span><span class="metric-val">38</span></div>
+            <div class="metric-row"><span class="metric-label">Renovados</span><span class="metric-val">21</span></div>
+            <div class="metric-row"><span class="metric-label">Artículos recuperados</span><span class="metric-val">15</span></div>
+            <div class="metric-row"><span class="metric-label">Tasa promedio</span><span class="metric-val" style="color:var(--green)">3,2% mensual</span></div>
+            <div class="metric-row"><span class="metric-label">Cartera total</span><span class="metric-val" style="color:var(--gold-dim)">$48.600.000</span></div>
+          </div>
+        </div>
+
+        <div class="ws-banner">
+          <div class="ws-icon-wrap">💬</div>
+          <div><div class="ws-title">WhatsApp Business API — Alertas automáticas de vencimiento</div><div class="ws-desc">Meta Cloud API · USD $0,04–$0,07 por mensaje · ~150 contratos ≈ USD $15–30/mes · Opción activable/desactivable por contrato</div></div>
+          <div class="ws-tag"><span class="badge badge-amber">Opcional</span></div>
+        </div>
+      </div>
+
+      <!-- ════ CONTRATOS ════ -->
+      <div class="view" id="v-contratos">
+        <div class="contrato-layout">
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Gestión de contratos (142)</div>
+                <div style="display:flex;gap:6px">
+                  <button class="btn-outline" onclick="document.getElementById('m-contrato').classList.add('show')">+ Nuevo</button>
+                  <button class="btn-outline" onclick="nav('reportes',null)">📄 PDF</button>
+                </div>
+              </div>
+              <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" placeholder="Buscar por cliente, artículo o # contrato…"></div>
+              <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+                <span class="badge badge-gold" style="cursor:pointer">Todos (142)</span>
+                <span class="badge badge-red" style="cursor:pointer">Vencen pronto (5)</span>
+                <span class="badge badge-green" style="cursor:pointer">Al día (128)</span>
+                <span class="badge badge-amber" style="cursor:pointer">Renovados (9)</span>
+              </div>
+              <table class="data-table">
+                <thead><tr><th>#</th><th>Cliente</th><th>Artículo</th><th>Préstamo</th><th>Avalúo</th><th>Vence</th><th>Estado</th></tr></thead>
+                <tbody>
+                  <tr onclick="toast('Contrato #1031 seleccionado')"><td style="color:var(--gold-dim);font-weight:600">1031</td><td style="font-weight:500">Pedro Gómez</td><td>Cadena oro 18k</td><td>$480.000</td><td>$750.000</td><td style="color:var(--red)">14 abr</td><td><span class="badge badge-red">1 día</span></td></tr>
+                  <tr><td style="color:var(--gold-dim);font-weight:600">1033</td><td style="font-weight:500">Ana Torres</td><td>Reloj Citizen</td><td>$420.000</td><td>$650.000</td><td style="color:var(--red)">16 abr</td><td><span class="badge badge-red">3 días</span></td></tr>
+                  <tr><td style="color:var(--gold-dim);font-weight:600">1036</td><td style="font-weight:500">Luis Ríos</td><td>Anillo diamante</td><td>$800.000</td><td>$1.200.000</td><td style="color:var(--amber)">18 abr</td><td><span class="badge badge-amber">5 días</span></td></tr>
+                  <tr><td style="color:var(--gold-dim);font-weight:600">1039</td><td style="font-weight:500">María Paz</td><td>iPhone 14 128GB</td><td>$1.200.000</td><td>$1.800.000</td><td style="color:var(--amber)">20 abr</td><td><span class="badge badge-amber">7 días</span></td></tr>
+                  <tr><td style="color:var(--gold-dim);font-weight:600">1042</td><td style="font-weight:500">José Murillo</td><td>Laptop Dell</td><td>$1.400.000</td><td>$2.100.000</td><td>25 abr</td><td><span class="badge badge-blue">12 días</span></td></tr>
+                  <tr><td style="color:var(--gold-dim);font-weight:600">1020</td><td style="font-weight:500">Sandra Leal</td><td>Pulsera plata 925</td><td>$180.000</td><td>$280.000</td><td>2 may</td><td><span class="badge badge-green">Al día</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="card">
+              <div style="font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Contrato #1031</div>
+              <div style="font-size:18px;font-family:'DM Serif Display',serif;color:var(--text-h);margin-bottom:2px">Pedro Gómez</div>
+              <div style="font-size:11px;color:var(--text-3);margin-bottom:10px">C.C. 79.542.318 · 310 555 0012</div>
+              <span class="badge badge-red">Vence en 1 día</span>
+              <div class="contract-meta-grid">
+                <div><div class="cmi-label">Artículo</div><div class="cmi-val">Cadena oro 18k</div></div>
+                <div><div class="cmi-label">Préstamo</div><div class="cmi-val gold">$480.000</div></div>
+                <div><div class="cmi-label">Avalúo</div><div class="cmi-val">$750.000</div></div>
+                <div><div class="cmi-label">Tasa</div><div class="cmi-val">3,5%/mes</div></div>
+                <div><div class="cmi-label">Interés</div><div class="cmi-val">$16.800</div></div>
+                <div><div class="cmi-label">Total pagar</div><div class="cmi-val gold">$496.800</div></div>
+              </div>
+              <div style="display:flex;gap:6px;margin-top:14px;flex-wrap:wrap">
+                <button class="btn-primary" style="flex:1;justify-content:center;font-size:11px" onclick="toast('Pago registrado exitosamente')">✓ Registrar pago</button>
+                <button class="btn-outline" style="font-size:11px">🔄 Renovar</button>
+                <button class="btn-outline" style="font-size:11px" onclick="toast('WhatsApp enviado a Pedro Gómez')">💬 WA</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">Historial</div></div>
+              <div class="timeline-item"><div class="tl-dot">📋</div><div><div class="tl-title">Contrato creado</div><div class="tl-meta">14 mar 2026 · Ana R.</div></div></div>
+              <div class="timeline-item"><div class="tl-dot">💰</div><div><div class="tl-title">Pago interés recibido</div><div class="tl-meta">20 mar 2026 · $16.800</div></div></div>
+              <div class="timeline-item"><div class="tl-dot">🔄</div><div><div class="tl-title">Renovación pendiente</div><div class="tl-meta">14 abr 2026</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ CAJA ════ -->
+      <div class="view" id="v-caja">
+        <div class="caja-header">
+          <div class="caja-stat"><div class="caja-stat-label">Ingresos hoy</div><div class="caja-stat-val green">$1.820.000</div></div>
+          <div class="caja-stat"><div class="caja-stat-label">Egresos hoy</div><div class="caja-stat-val red">$480.000</div></div>
+          <div class="caja-stat"><div class="caja-stat-label">Saldo neto</div><div class="caja-stat-val gold">$1.340.000</div></div>
+        </div>
+        <div class="grid-2-eq">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Movimientos — 13 abr 2026</div>
+              <div style="display:flex;gap:6px">
+                <button class="btn-ghost" onclick="toast('Movimiento registrado')">+ Registrar</button>
+                <button class="btn-outline" onclick="toast('📄 Cuadre de caja generado')">📄 PDF</button>
+              </div>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>Hora</th><th>Tipo</th><th>Descripción</th><th>Usuario</th><th>Monto</th></tr></thead>
+              <tbody>
+                <tr><td>08:00</td><td><span class="badge badge-blue">Apertura</span></td><td>Apertura de caja</td><td>Carlos M.</td><td style="color:var(--green);font-weight:600">+$200.000</td></tr>
+                <tr><td>08:30</td><td><span class="badge badge-red">Egreso</span></td><td>Gastos operativos</td><td>Carlos M.</td><td style="color:var(--red);font-weight:600">−$45.000</td></tr>
+                <tr><td>09:20</td><td><span class="badge badge-red">Egreso</span></td><td>Devolución art. #1038</td><td>Carlos M.</td><td style="color:var(--red);font-weight:600">−$210.000</td></tr>
+                <tr><td>09:50</td><td><span class="badge badge-green">Ingreso</span></td><td>Pago interés #1039</td><td>Carlos M.</td><td style="color:var(--green);font-weight:600">+$85.000</td></tr>
+                <tr><td>10:15</td><td><span class="badge badge-green">Ingreso</span></td><td>Préstamo #1042</td><td>Carlos M.</td><td style="color:var(--green);font-weight:600">+$350.000</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Conciliación por usuario</div></div>
+            <div class="metric-row"><span class="metric-label">Ana Rodríguez — turno mañana</span><span class="metric-val" style="color:var(--green)">✓ Cuadrada</span></div>
+            <div class="metric-row"><span class="metric-label">Carlos Morales — turno día</span><span class="metric-val" style="color:var(--amber)">En curso…</span></div>
+            <div class="metric-row"><span class="metric-label">Viernes 11 abr — cierre</span><span class="metric-val" style="color:var(--red)">⚠ Pendiente</span></div>
+            <div style="margin-top:16px">
+              <div style="font-size:11px;color:var(--text-2);margin-bottom:8px">Distribución de ingresos</div>
+              <div class="stacked-bar">
+                <div style="width:45%;background:var(--green)"></div>
+                <div style="width:30%;background:var(--gold)"></div>
+                <div style="width:15%;background:var(--blue)"></div>
+                <div style="width:10%;background:var(--text-3)"></div>
+              </div>
+              <div style="display:flex;gap:10px;font-size:10px;flex-wrap:wrap">
+                <span style="color:var(--green)">● Préstamos</span>
+                <span style="color:var(--gold-dim)">● Intereses</span>
+                <span style="color:var(--blue)">● Renovaciones</span>
+                <span style="color:var(--text-3)">● Otros</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ INVENTARIO ════ -->
+      <div class="view" id="v-inventario">
+        <div class="section-header">
+          <div class="section-title">Inventario — 1.048 artículos</div>
+          <div style="display:flex;gap:8px">
+            <div class="search-wrap" style="margin-bottom:0;width:220px"><span class="search-icon">🔍</span><input class="search-input" placeholder="Buscar artículo…"></div>
+            <button class="btn-ghost">Filtrar</button>
+            <button class="btn-outline" onclick="toast('📄 Inventario completo exportado')">📄 PDF</button>
+            <button class="btn-primary" onclick="toast('Formulario de artículo abierto')">+ Artículo</button>
+          </div>
+        </div>
+        <div class="inv-card-grid">
+          <div class="inv-card"><div class="inv-card-img">💎</div><div class="inv-card-body"><div class="inv-card-name">Anillo solitario oro 18k</div><div class="inv-card-loc">Vitrina 2 · Cto #1039</div><div class="inv-card-footer"><span class="badge badge-amber">En garantía</span><span style="color:var(--gold-dim);font-weight:600">$1.200.000</span></div></div></div>
+          <div class="inv-card"><div class="inv-card-img">📱</div><div class="inv-card-body"><div class="inv-card-name">iPhone 14 128GB negro</div><div class="inv-card-loc">Bodega A3 · Cto #1041</div><div class="inv-card-footer"><span class="badge badge-amber">En garantía</span><span style="color:var(--gold-dim);font-weight:600">$1.800.000</span></div></div></div>
+          <div class="inv-card"><div class="inv-card-img">⌚</div><div class="inv-card-body"><div class="inv-card-name">Reloj Citizen Eco-Drive</div><div class="inv-card-loc">Vitrina 1 · Cto #1033</div><div class="inv-card-footer"><span class="badge badge-green">Disponible</span><span style="color:var(--gold-dim);font-weight:600">$650.000</span></div></div></div>
+          <div class="inv-card"><div class="inv-card-img" style="position:relative">💻<span style="position:absolute;top:6px;right:8px;font-size:9px;background:var(--amber-bg);color:var(--amber);padding:2px 6px;border-radius:4px;font-weight:600">Sin foto</span></div><div class="inv-card-body"><div class="inv-card-name">Laptop Dell Inspiron 15</div><div class="inv-card-loc">Bodega B1 · Cto #1042</div><div class="inv-card-footer"><span class="badge badge-amber">En garantía</span><span style="color:var(--gold-dim);font-weight:600">$2.100.000</span></div></div></div>
+          <div class="inv-card"><div class="inv-card-img">🏅</div><div class="inv-card-body"><div class="inv-card-name">Cadena oro 18k 40cm</div><div class="inv-card-loc">Vitrina 3 · Cto #1031</div><div class="inv-card-footer"><span class="badge badge-red">Vence hoy</span><span style="color:var(--gold-dim);font-weight:600">$750.000</span></div></div></div>
+          <div class="inv-card"><div class="inv-card-img">💍</div><div class="inv-card-body"><div class="inv-card-name">Pulsera plata 925</div><div class="inv-card-loc">Vitrina 2 · Cto #1020</div><div class="inv-card-footer"><span class="badge badge-blue">Renovado</span><span style="color:var(--gold-dim);font-weight:600">$280.000</span></div></div></div>
+        </div>
+      </div>
+
+      <!-- ════ CLIENTES ════ -->
+      <div class="view" id="v-clientes">
+        <div class="cliente-layout">
+          <div>
+            <div class="search-wrap"><span class="search-icon">🔍</span><input class="search-input" placeholder="Nombre o cédula…"></div>
+            <div class="cli-item selected"><div class="cli-avatar" style="background:var(--gold-bg);color:var(--gold-dim)">PG</div><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text-h)">Pedro Gómez</div><div style="font-size:11px;color:var(--text-3)">79.542.318</div></div><span class="badge badge-red">1 día</span></div>
+            <div class="cli-item" onclick="this.closest('.cliente-layout').querySelectorAll('.cli-item').forEach(e=>e.classList.remove('selected'));this.classList.add('selected')"><div class="cli-avatar" style="background:var(--blue-bg);color:var(--blue)">AT</div><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text-h)">Ana Torres</div><div style="font-size:11px;color:var(--text-3)">52.871.004</div></div><span class="badge badge-red">3 días</span></div>
+            <div class="cli-item" onclick="this.closest('.cliente-layout').querySelectorAll('.cli-item').forEach(e=>e.classList.remove('selected'));this.classList.add('selected')"><div class="cli-avatar" style="background:var(--green-bg);color:var(--green)">LR</div><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text-h)">Luis Ríos</div><div style="font-size:11px;color:var(--text-3)">1.020.334.781</div></div><span class="badge badge-green">Al día</span></div>
+            <div class="cli-item" onclick="this.closest('.cliente-layout').querySelectorAll('.cli-item').forEach(e=>e.classList.remove('selected'));this.classList.add('selected')"><div class="cli-avatar" style="background:var(--amber-bg);color:var(--amber)">MP</div><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text-h)">María Paz</div><div style="font-size:11px;color:var(--text-3)">30.452.119</div></div><span class="badge badge-amber">7 días</span></div>
+            <div class="cli-item" onclick="this.closest('.cliente-layout').querySelectorAll('.cli-item').forEach(e=>e.classList.remove('selected'));this.classList.add('selected')"><div class="cli-avatar" style="background:var(--gold-bg);color:var(--gold-dim)">JM</div><div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--text-h)">José Murillo</div><div style="font-size:11px;color:var(--text-3)">79.871.224</div></div><span class="badge badge-blue">Nuevo</span></div>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden">
+            <div class="profile-top">
+              <div class="profile-avatar">PG</div>
+              <div><div style="font-family:'DM Serif Display',serif;font-size:18px;color:var(--text-h)">Pedro Gómez</div><div style="font-size:11px;color:var(--text-3);margin-top:3px">C.C. 79.542.318 · 310 555 0012 · Cliente desde 2024</div></div>
+            </div>
+            <div style="padding:18px">
+              <div class="profile-stats">
+                <div class="ps"><div class="ps-val" style="color:var(--gold-dim)">8</div><div class="ps-label">Contratos</div></div>
+                <div class="ps"><div class="ps-val" style="color:var(--green)">6</div><div class="ps-label">Pagados</div></div>
+                <div class="ps"><div class="ps-val" style="color:var(--blue)">2</div><div class="ps-label">Activos</div></div>
+              </div>
+              <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:10px">Historial</div>
+              <div class="move-item"><div class="move-dot in"></div><div class="move-desc"><div class="move-title">Préstamo #1031 — Cadena oro</div><div class="move-meta">14 mar 2026 · $480.000</div></div><span class="badge badge-red">Pendiente</span></div>
+              <div class="move-item"><div class="move-dot in"></div><div class="move-desc"><div class="move-title">Préstamo #0998 — Anillo</div><div class="move-meta">10 ene 2026 · $320.000</div></div><span class="badge badge-green">Pagado</span></div>
+              <div class="move-item"><div class="move-dot in"></div><div class="move-desc"><div class="move-title">Préstamo #0971 — Reloj</div><div class="move-meta">5 nov 2025 · $180.000</div></div><span class="badge badge-green">Pagado</span></div>
+              <div style="display:flex;gap:6px;margin-top:14px">
+                <button class="btn-primary" style="flex:1;justify-content:center;font-size:11px" onclick="document.getElementById('m-contrato').classList.add('show')">+ Nuevo contrato</button>
+                <button class="btn-outline" onclick="toast('WhatsApp enviado')">💬 WA</button>
+                <button class="btn-outline" onclick="toast('📄 Historial exportado')">📄 PDF</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ EVIDENCIA ════ -->
+      <div class="view" id="v-evidencia">
+        <div class="grid-2-eq">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Fotos y firmas — Cto #1031</div>
+              <button class="btn-ghost" onclick="toast('Foto cargada exitosamente')">+ Subir</button>
+            </div>
+            <div style="font-size:11px;color:var(--text-3);margin-bottom:10px">Pedro Gómez · Cadena oro 18k · 14 mar 2026</div>
+            <div class="foto-grid">
+              <div class="foto-thumb">🏅<div class="foto-label">Artículo frente</div></div>
+              <div class="foto-thumb">📐<div class="foto-label">Artículo reverso</div></div>
+              <div class="foto-thumb">🪪<div class="foto-label">Cédula cliente</div></div>
+              <div class="foto-thumb">✍️<div class="foto-label">Firma digital</div></div>
+              <div class="foto-thumb">🔍<div class="foto-label">Detalle joya</div></div>
+              <div class="foto-thumb" style="border-style:dashed;color:var(--text-3)">+<div class="foto-label">Agregar</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Log de trazabilidad</div>
+              <button class="btn-outline" onclick="toast('📄 Log de auditoría exportado')">📄 PDF</button>
+            </div>
+            <table class="data-table">
+              <thead><tr><th>Fecha/hora</th><th>Acción</th><th>Usuario</th></tr></thead>
+              <tbody>
+                <tr><td style="color:var(--text-3)">13 abr 10:15</td><td>Contrato #1042 creado</td><td>Carlos M.</td></tr>
+                <tr><td style="color:var(--text-3)">13 abr 09:50</td><td>Pago registrado #1039</td><td>Carlos M.</td></tr>
+                <tr><td style="color:var(--text-3)">13 abr 09:30</td><td>Foto subida art. #1031</td><td>Ana R.</td></tr>
+                <tr><td style="color:var(--text-3)">13 abr 08:00</td><td>Apertura de caja</td><td>Carlos M.</td></tr>
+                <tr><td style="color:var(--text-3)">12 abr 18:02</td><td>Cierre de caja</td><td>Ana R.</td></tr>
+                <tr><td style="color:var(--text-3)">12 abr 11:20</td><td>WhatsApp enviado #1031</td><td>Sistema</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ REPORTES PDF ════ -->
+      <div class="view" id="v-reportes">
+        <div class="section-header">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <select style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-sm);color:var(--text-b);font-size:12px;padding:7px 12px;outline:none;font-family:'DM Sans',sans-serif">
+              <option>Contratos por vencer</option>
+              <option>Cuadre de caja diario</option>
+              <option>Inventario completo</option>
+              <option>Historial de cliente</option>
+              <option>Movimientos del mes</option>
+              <option>Indicadores del negocio</option>
+            </select>
+            <select style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:var(--radius-sm);color:var(--text-b);font-size:12px;padding:7px 12px;outline:none;font-family:'DM Sans',sans-serif">
+              <option>Hoy — 13 abr 2026</option>
+              <option>Esta semana</option>
+              <option>Este mes</option>
+              <option>Rango personalizado</option>
+            </select>
+          </div>
+          <button class="btn-primary btn-pulse" onclick="toast('📄 PDF generado con DomPDF · Descargando…')">📄 Descargar PDF</button>
+        </div>
+        <div style="font-size:11px;color:var(--text-3);margin-bottom:14px">Generado con <strong>DomPDF</strong> (barryvdh/laravel-dompdf) · Vista previa en tiempo real</div>
+        <div class="report-preview">
+          <div class="pdf-gold-bar"></div>
+          <div class="pdf-page">
+            <div class="pdf-header">
+              <div><div class="pdf-brand-name">💎 PrenderíaPro</div><div class="pdf-brand-sub">Sistema de gestión · NIT 900.123.456-7</div></div>
+              <div><div class="pdf-report-name">Contratos próximos a vencer</div><div class="pdf-report-date">Generado: 13 abr 2026 · 10:42 a.m.</div><div class="pdf-report-date">Usuario: Carlos Morales</div></div>
+            </div>
+            <div class="pdf-kpi-row">
+              <div class="pdf-kpi"><div class="pdf-kpi-label">Contratos activos</div><div class="pdf-kpi-val">142</div></div>
+              <div class="pdf-kpi"><div class="pdf-kpi-label">Vencen en 7 días</div><div class="pdf-kpi-val red">5</div></div>
+              <div class="pdf-kpi"><div class="pdf-kpi-label">Cartera en riesgo</div><div class="pdf-kpi-val gold">$3.230.000</div></div>
+              <div class="pdf-kpi"><div class="pdf-kpi-label">Tasa promedio</div><div class="pdf-kpi-val">3,2%</div></div>
+            </div>
+            <div class="pdf-section-title">Detalle — contratos por vencer</div>
+            <table class="pdf-table">
+              <thead><tr><th>#</th><th>Cliente</th><th>C.C.</th><th>Artículo</th><th>Préstamo</th><th>Avalúo</th><th>Vence</th><th>Estado</th></tr></thead>
+              <tbody>
+                <tr><td><b>1031</b></td><td>Pedro Gómez</td><td>79.542.318</td><td>Cadena oro 18k</td><td>$480.000</td><td>$750.000</td><td style="color:#C0392B;font-weight:600">14 abr</td><td><span class="pdf-badge red">1 día</span></td></tr>
+                <tr><td><b>1033</b></td><td>Ana Torres</td><td>52.871.004</td><td>Reloj Citizen</td><td>$420.000</td><td>$650.000</td><td style="color:#C0392B;font-weight:600">16 abr</td><td><span class="pdf-badge red">3 días</span></td></tr>
+                <tr><td><b>1036</b></td><td>Luis Ríos</td><td>1.020.334.781</td><td>Anillo diamante</td><td>$800.000</td><td>$1.200.000</td><td style="color:#9B6E00;font-weight:600">18 abr</td><td><span class="pdf-badge amber">5 días</span></td></tr>
+                <tr><td><b>1039</b></td><td>María Paz</td><td>30.452.119</td><td>iPhone 14 128GB</td><td>$1.200.000</td><td>$1.800.000</td><td style="color:#9B6E00;font-weight:600">20 abr</td><td><span class="pdf-badge amber">7 días</span></td></tr>
+                <tr><td><b>1042</b></td><td>José Murillo</td><td>79.871.224</td><td>Laptop Dell</td><td>$1.400.000</td><td>$2.100.000</td><td>25 abr</td><td><span class="pdf-badge green">12 días</span></td></tr>
+              </tbody>
+            </table>
+            <div class="pdf-footer">
+              <span>PrenderíaPro v1.0 · Laravel 11 + Vue 3 + DomPDF</span>
+              <span>Página 1 de 1 · Confidencial</span>
+              <span>© 2026 PrenderíaPro Colombia</span>
+            </div>
+          </div>
+          <div class="pdf-gold-bar"></div>
+        </div>
+      </div>
+
+      <!-- ════ INDICADORES ════ -->
+      <div class="view" id="v-indicadores">
+        <div class="kpi-grid">
+          <div class="kpi-card gold"><div class="kpi-icon-wrap gold">💼</div><div class="kpi-label">Cartera total</div><div class="kpi-value gold" style="font-size:20px">$48,6M</div><div class="kpi-trend up">↑ 12% vs mes anterior</div></div>
+          <div class="kpi-card success"><div class="kpi-icon-wrap success">📈</div><div class="kpi-label">Ingresos mes</div><div class="kpi-value" style="font-size:20px">$8,2M</div><div class="kpi-trend up">↑ 6%</div></div>
+          <div class="kpi-card gold"><div class="kpi-icon-wrap gold">🔄</div><div class="kpi-label">Tasa renovación</div><div class="kpi-value">68%</div><div class="kpi-trend up">Buen indicador</div></div>
+          <div class="kpi-card success"><div class="kpi-icon-wrap success">⚡</div><div class="kpi-label">Recuperación</div><div class="kpi-value">94%</div><div class="kpi-trend neutral">Estable</div></div>
+        </div>
+        <div class="grid-2-eq">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Artículos por categoría</div><button class="btn-outline" onclick="toast('📄 Reporte de indicadores exportado')">📄 PDF</button></div>
+            <div class="progress-wrap"><div class="progress-label"><span>Joyería y oro</span><span style="font-weight:500">48%</span></div><div class="progress-bar"><div class="progress-fill" style="width:48%;background:linear-gradient(90deg,#8B6F35,#C9A84C)"></div></div></div>
+            <div class="progress-wrap"><div class="progress-label"><span>Electrónica</span><span style="font-weight:500">31%</span></div><div class="progress-bar"><div class="progress-fill" style="width:31%;background:linear-gradient(90deg,#185FA5,#378ADD)"></div></div></div>
+            <div class="progress-wrap"><div class="progress-label"><span>Relojes</span><span style="font-weight:500">12%</span></div><div class="progress-bar"><div class="progress-fill" style="width:12%;background:linear-gradient(90deg,#2D7D52,#4CAF7D)"></div></div></div>
+            <div class="progress-wrap"><div class="progress-label"><span>Herramientas</span><span style="font-weight:500">6%</span></div><div class="progress-bar"><div class="progress-fill" style="width:6%;background:linear-gradient(90deg,#9B6E00,#E8A53A)"></div></div></div>
+            <div class="progress-wrap"><div class="progress-label"><span>Otros</span><span style="font-weight:500">3%</span></div><div class="progress-bar"><div class="progress-fill" style="width:3%;background:var(--text-3)"></div></div></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Contratos nuevos — 2026</div></div>
+            <div class="bar-chart">
+              <div class="bar-col"><div class="bar-fill" style="height:55%"></div><div class="bar-label">Ene</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:70%"></div><div class="bar-label">Feb</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:60%"></div><div class="bar-label">Mar</div></div>
+              <div class="bar-col"><div class="bar-fill active" style="height:88%"></div><div class="bar-label" style="color:var(--gold-dim);font-weight:600">Abr</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ HOSTING & TECH ════ -->
+      <div class="view" id="v-hosting">
+        <div class="grid-2-eq" style="margin-bottom:16px">
+          <div class="hosting-card">
+            <div style="font-size:10px;color:rgba(201,168,76,0.6);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">Análisis de almacenamiento</div>
+            <div style="font-family:'DM Serif Display',serif;font-size:20px;color:#E8CC7A;margin-bottom:14px">Capacidad estimada para 1.000 artículos</div>
+            <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+              <div style="display:flex;justify-content:space-between;padding:8px 10px;background:rgba(255,255,255,0.04);border-radius:6px"><span style="color:#9E9A93">Fotos por artículo (promedio)</span><span style="color:#E8CC7A;font-weight:600">4 fotos</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 10px;background:rgba(255,255,255,0.04);border-radius:6px"><span style="color:#9E9A93">Tamaño por foto (comprimida)</span><span style="color:#E8CC7A;font-weight:600">~400 KB</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 10px;background:rgba(255,255,255,0.04);border-radius:6px"><span style="color:#9E9A93">Total fotos 1.000 artículos</span><span style="color:#E8CC7A;font-weight:600">~1.6 GB</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 10px;background:rgba(255,255,255,0.04);border-radius:6px"><span style="color:#9E9A93">Firmas digitales + documentos</span><span style="color:#E8CC7A;font-weight:600">~400 MB</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 10px;background:rgba(255,255,255,0.04);border-radius:6px"><span style="color:#9E9A93">Base de datos MySQL</span><span style="color:#E8CC7A;font-weight:600">~200 MB</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 10px;background:rgba(201,168,76,0.1);border-radius:6px;border:1px solid rgba(201,168,76,0.2)"><span style="color:#C9A84C;font-weight:600">TOTAL estimado</span><span style="color:#E8CC7A;font-weight:700;font-size:15px">~2.5 GB</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 10px;background:rgba(255,255,255,0.04);border-radius:6px"><span style="color:#9E9A93">Crecimiento anual proyectado</span><span style="color:#E8CC7A;font-weight:600">+1.5 GB/año</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 10px;background:rgba(45,125,82,0.15);border-radius:6px;border:1px solid rgba(76,175,125,0.2)"><span style="color:#4CAF7D;font-weight:600">Hosting recomendado</span><span style="color:#4CAF7D;font-weight:700">SiteGround GrowBig 20 GB</span></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="card">
+              <div class="card-header"><div class="card-title">Stack tecnológico recomendado</div></div>
+              <table class="data-table">
+                <thead><tr><th>Capa</th><th>Tecnología</th><th>Licencia</th></tr></thead>
+                <tbody>
+                  <tr><td>Backend</td><td style="font-weight:500">Laravel 11</td><td><span class="badge badge-green">Gratis</span></td></tr>
+                  <tr><td>Frontend</td><td style="font-weight:500">Vue 3 + Vite</td><td><span class="badge badge-green">Gratis</span></td></tr>
+                  <tr><td>Base de datos</td><td style="font-weight:500">MySQL 8</td><td><span class="badge badge-green">Gratis</span></td></tr>
+                  <tr><td>PDF</td><td style="font-weight:500">DomPDF (Laravel)</td><td><span class="badge badge-green">Gratis</span></td></tr>
+                  <tr><td>Autenticación</td><td style="font-weight:500">Laravel Sanctum</td><td><span class="badge badge-green">Gratis</span></td></tr>
+                  <tr><td>WhatsApp</td><td style="font-weight:500">Meta Cloud API</td><td><span class="badge badge-amber">Pago por uso</span></td></tr>
+                  <tr><td>Hosting</td><td style="font-weight:500">SiteGround GrowBig</td><td><span class="badge badge-blue">USD $15/mes</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card">
+              <div class="card-header"><div class="card-title">Costos recurrentes mensuales</div></div>
+              <div class="metric-row"><span class="metric-label">Hosting SiteGround GrowBig</span><span class="metric-val" style="color:var(--text-h)">~$60.000 COP</span></div>
+              <div class="metric-row"><span class="metric-label">Dominio .com/año (mensualizado)</span><span class="metric-val">~$4.000 COP</span></div>
+              <div class="metric-row"><span class="metric-label">WhatsApp API (~150 mensajes)</span><span class="metric-val" style="color:var(--amber)">~$30.000–60.000 COP</span></div>
+              <div class="metric-row" style="background:var(--green-bg)"><span class="metric-label" style="font-weight:600">Total operación mensual</span><span class="metric-val" style="color:var(--green);font-weight:700">~$94.000–124.000 COP</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="ws-banner">
+          <div class="ws-icon-wrap">💡</div>
+          <div><div class="ws-title">Optimización de almacenamiento de imágenes</div><div class="ws-desc">Las fotos se comprimen automáticamente con Intervention Image (Laravel) antes de guardarse. Tamaño máximo recomendado: 800×800px · JPEG 80% → ~300–500 KB por foto. Crecimiento controlado y predecible.</div></div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- MODAL NUEVO CONTRATO -->
+<div class="modal-backdrop" id="m-contrato" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="modal-box">
+    <div class="modal-title">Nuevo contrato de empeño</div>
+    <div class="modal-sub">Registre el cliente, artículo y condiciones del préstamo</div>
+    <div class="form-grid-2">
+      <div class="form-row"><label class="form-label">Cliente</label><input class="form-input" placeholder="Nombre completo"></div>
+      <div class="form-row"><label class="form-label">Cédula (C.C.)</label><input class="form-input" placeholder="79.542.318"></div>
+    </div>
+    <div class="form-row"><label class="form-label">Artículo en garantía</label><input class="form-input" placeholder="Descripción detallada del artículo"></div>
+    <div class="form-grid-2">
+      <div class="form-row"><label class="form-label">Avalúo ($)</label><input class="form-input" placeholder="$0"></div>
+      <div class="form-row"><label class="form-label">Monto préstamo ($)</label><input class="form-input" placeholder="$0"></div>
+    </div>
+    <div class="form-grid-2">
+      <div class="form-row"><label class="form-label">Tasa (%/mes)</label><input class="form-input" value="3.5"></div>
+      <div class="form-row"><label class="form-label">Días del contrato</label><input class="form-input" value="30"></div>
+    </div>
+    <div class="form-row"><label class="form-label">Ubicación física</label><input class="form-input" placeholder="Ej: Vitrina 2, Caja 4"></div>
+    <div class="upload-zone">📷 Subir fotos del artículo y cédula del cliente</div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="document.getElementById('m-contrato').classList.remove('show')">Cancelar</button>
+      <button class="btn-primary" onclick="document.getElementById('m-contrato').classList.remove('show');toast('Contrato #1043 creado exitosamente')">Crear contrato</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast-el">
+  <span class="toast-icon">✅</span>
+  <span id="toast-msg">Acción completada</span>
+</div>
+
+<script>
+const titles = {dashboard:'Dashboard',contratos:'Contratos',clientes:'Clientes',caja:'Caja y movimientos',inventario:'Inventario — 1.048 artículos',evidencia:'Evidencia y trazabilidad',reportes:'Reportes PDF',indicadores:'Indicadores del negocio',hosting:'Hosting y stack técnico'};
+function nav(name, el) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('v-'+name).classList.add('active');
+  document.getElementById('tb-title').textContent = titles[name]||name;
+  if(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');}
+}
+function toast(msg) {
+  const t=document.getElementById('toast-el');
+  document.getElementById('toast-msg').textContent=msg||'Acción completada';
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),3000);
+}
+</script>
+</body>
+</html>
